@@ -1,0 +1,6 @@
+LUI r2, 8
+LUI r3, 9
+BEQ r3, r0, 4
+ADD r4, r2, r4
+SUBI r3, r3, 1
+JAL r5, -3
