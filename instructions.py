@@ -1,4 +1,6 @@
-
+"""
+Reference: https://rv8.io/isa.html
+"""
 class Instructions:
     def execute(self):
         raise NotImplementedError()
@@ -267,8 +269,6 @@ class BGE(Instructions):
 
         return pc + 1
 
-class BGEU(Instructions): pass
-class BLTU(Instructions): pass
 
 class LB(Instructions):
     def __init__(self, destination, source1, offset):
@@ -310,9 +310,6 @@ class LW(Instructions):
         registers[self.destination] = data
         return pc + 1
 
-class LBU(Instructions): pass
-
-class LHU(Instructions): pass
 
 class SB(Instructions): 
     def __init__(self, source1, destination, offset):
@@ -374,15 +371,124 @@ class SW(Instructions):
 
         return pc + 1
 
+class SLT(Instructions): 
+    def __init__(self, destination, source1, source2):
+        self.source1 = source1
+        self.source2 = source2
+        self.destination = destination
+
+    def execute(self,  memory, registers, pc):
+        operand1 = registers[self.source1]
+        operand2 = registers[self.source2]
+        if operand1 < operand2:
+            registers[self.destination] = 1
+        return pc + 1
+
+class SLTI(Instructions): 
+    def __init__(self, destination, source1, immediate):
+        self.source1 = source1
+        self.destination = destination
+        self.immediate = int(immediate)
+
+    def execute(self,  memory, registers, pc):
+        operand1 = registers[self.source1]
+        operand2 = immediate
+        if operand1 < operand2:
+            registers[self.destination] = 1
+        return pc + 1
+
+class SLL(Instructions): 
+    def __init__(self, destination, source1, source2):
+        self.source1 = source1
+        self.source2 = source2
+        self.destination = destination
+
+    def execute(self,  memory, registers, pc):
+        n = registers[self.source1]
+        n = bin(n)[2:]
+        n = n.rjust(32, "0")
+
+        shift_by = registers[self.source2]
+
+        result = n[shift_by:] + "0" * shift_by
+        registers[self.destination]  = int(result, 2)
+
+        return pc + 1
+
+
+class SLLI(Instructions): 
+    def __init__(self, destination, source1, immediate):
+        self.source1 = source1
+        self.destination = destination
+        self.immediate = int(immediate)
+
+    def execute(self,  memory, registers, pc):
+        n = registers[self.source1]
+        n = bin(n)[2:]
+        n = n.rjust(32, "0")
+
+        shift_by = self.immediate
+
+        result = n[shift_by:] + "0" * shift_by
+        registers[self.destination]  = int(result, 2)
+
+        return pc + 1
+
+class SRLI(Instructions): 
+    def __init__(self, destination, source1, immediate):
+        self.source1 = source1
+        self.destination = destination
+        self.immediate = int(immediate)
+
+    def execute(self,  memory, registers, pc):
+        n = registers[self.source1]
+        n = bin(n)[2:]
+        n = n.rjust(32, "0")
+
+        shift_by = self.immediate
+
+        result = "0" * shift_by + n[:-shift_by]
+
+        registers[self.destination]  = int(result, 2)
+
+        return pc + 1
+
+class SRAI(Instructions): 
+    def __init__(self, destination, source1, immediate):
+        self.source1 = source1
+        self.destination = destination
+        self.immediate = int(immediate)
+
+    def execute(self,  memory, registers, pc):
+        n = registers[self.source1]
+        shift_by = self.immediate
+
+
+        registers[self.destination]  = n >> shift_by 
+
+        return pc + 1
+
+class SRA(Instructions): 
+    def __init__(self, destination, source1, source2):
+        self.source1 = source1
+        self.source2 = source2
+        self.destination = destination
+
+    def execute(self,  memory, registers, pc):
+        n = registers[self.source1]
+        shift_by = registers[self.source2]
+
+
+        registers[self.destination]  = n >> shift_by 
+
+        return pc + 1
+
 """
-class SLTI(Instructions):
-class SLTIU(Instructions):
-class SLLI
-class SRLI
-class SRAI
-SRAI
-SLT
-SLTU
 SRL
-SRA
 """
+class SLTU(Instructions):pass
+class SLTIU(Instructions):pass
+class BGEU(Instructions): pass
+class BLTU(Instructions): pass
+class LBU(Instructions): pass
+class LHU(Instructions): pass
