@@ -1,4 +1,5 @@
 import memory
+import sys
 from grammer import lexer, transformer
 
 def create_environment():
@@ -23,11 +24,19 @@ def transform(tokens):
     return asts
 
 def execute(main_memory, register_file, machine_code, pc):
+    print ("Executing...")
     while pc != len(machine_code):
-        pc = machine_code[pc].execute(main_memory, register_file, pc)
+        instruction = machine_code[pc]
+        print (instruction)
+        pc = instruction.execute(main_memory, register_file, pc)
 
 def main():
-    f = "test/multiply.txt"
+    #parser = argparse.ArgumentParser()
+    #parser.add_argument("-i", "--input", help="A text file which is the assembly code", action=)
+    #args = parser.parse_args()
+
+    f = sys.argv[1]
+    print ("executing file %s", f)
     # Set up Virtual Environment
     memory_file, register_file = create_environment()    
 
